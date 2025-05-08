@@ -1,0 +1,97 @@
+GCA_900231445.1	Svevo.v1	Triticum turgidum subsp. durum							Annotation submitted by ITB-CNR	Chromosome	2019-02-13		14
+GCA_022644695.1	ASM2264469v1	Cenchrus purpureus			elephant grass					Chromosome	2022-03-21		14
+GCA_032464435.1	ASM3246443v1	Aegilops umbellulata			TA1851					Chromosome	2023-10-09		7
+GCA_036346405.1	KIB_Pedu_3	Phyllostachys edulis					GZH03			Chromosome	2024-02-02	JAYEVD01	943
+GCA_020631735.1	ASM2063173v1	Saccharum officinarum			LA-purple					Chromosome	2021-10-27	JAIWYO01	9617
+GCA_032690845.1	Eleusine_coracana_v1.0	Eleusine coracana subsp. coracana			KNE 796-S				Annotation submitted by University of Georgia	Chromosome	2023-11-02	JASSVF01	674
+GCA_009805545.1	ASM980554v1	Oryza longistaminata					w11			Chromosome	2019-12-31	WNHE01	1009
+GCA_034509565.1	PI306540_Tmono	Triticum monococcum			PI 306540					Chromosome	2023-12-27	JAWJKA01	11
+GCA_000576495.2	OgluRS3	Oryza glumipatula								Chromosome	2021-03-10	ALNU03	68
+GCA_000576065.2	OnivRS2	Oryza nivara								Chromosome	2021-03-10	AWHD02	38
+GCA_009763385.1	ASM976338v1	Coix lacryma-jobi var. lacryma-jobi			BJ					Chromosome	2019-12-18	VDCT01	1233
+GCA_030979885.1	Rabiosa unphased assembly	Lolium multiflorum			Rabiosa		02402/16		Annotation submitted by Molecular Plant Breeding Group, ETH Zurich	Chromosome	2023-08-30	JAUUTY01	1916
+GCA_000338895.3	OmerRS3	Oryza meridionalis			OR44 (W2112)					Chromosome	2021-03-10	ALNW03	198
+GCA_000182155.4	ObarRS3	Oryza barthii								Chromosome	2021-03-10	ABRL03	67
+GCA_017311315.1	mabamboo_1.0	Dendrocalamus latiflorus					YDM-20191121			Chromosome	2021-03-10	JACBGG01	411
+GCA_022530915.1	ASM2253091v1	Paspalum notatum				China	baixicao-1			Chromosome	2022-03-10	JAJQMO01	49
+GCA_028641055.1	Alomy_genome_v1	Alopecurus myosuroides				Rothamsted				Chromosome	2023-02-22	JAPCYS01	4134
+GCA_021437245.1	ASM2143724v1	Aegilops speltoides					TS01			Chromosome	2022-01-12	JAHHZJ01	10827
+GCA_002993905.1	Msac_v3	Miscanthus sacchariflorus			Robustus 297					Chromosome	2018-03-14	PUID01	137916
+GCA_039707655.1	ASM3970765v1	Elymus sibiricus			GaomuNo.1					Chromosome	2024-05-20	JBDKXM01	152
+GCA_000573905.2	OpunRS2	Oryza punctata								Chromosome	2021-03-10	AVCL02	77
+GCA_011799875.1	ASM1179987v1	Thinopyrum elongatum					D-3458			Chromosome	2020-04-01	JAAAXO01	646
+GCA_019320115.1	ASM1932011v1	Miscanthus floridulus			M001					Chromosome	2021-07-26	JAAIKP01	2419
+GCA_036346575.1	KIB_Dsin_1	Dendrocalamus sinicus					GZH08			Chromosome	2024-02-02	JAYEVI01	557
+GCA_004135705.1	ASEM_AUS1_V1.0	Alloteropsis semialata				AUS1-1				Chromosome	2019-02-04	QPGU01	686
+GCA_950022295.1	lpBroSter1.1	Bromus sterilis								Chromosome	2023-06-27	CATLOQ01	249
+GCA_022496015.1	ASM2249601v1	Hordeum marinum					H559			Chromosome	2022-03-07	JAAAWK01	1197
+GCA_015476505.1	Embrapa_Uruz_1.0	Urochloa ruziziensis					Clone 69			Chromosome	2020-11-16	WEIB01	1146
+GCA_007726485.1	CERZOS_EC1.0	Eragrostis curvula			Victoria				Annotation submitted by CERZOS-CONICET	Chromosome	2019-08-05	RWGY01	1143
+GCA_026929855.1	FRR_PoAnn_1.0	Poa annua			MN234					Chromosome	2022-12-16	JAPMLF01	26
+GCA_019359835.1	ASM1935983v1	Pharus latifolius					CRB341			Chromosome	2021-07-27	JAEVLQ01	121
+GCA_910589765.1	Avena_atlantica_CC7277_v1_assembly	Avena atlantica			CC7277					Chromosome	2022-09-22	CAJUWN01	2195
+GCA_964030465.2	lpUroDecu1.1	Urochloa decumbens							Annotation submitted by Earlham Institute	Chromosome	2024-06-10	CAXIPR02	7122
+GCA_040143895.1	PSU_Psup_1	Poa supina					PSU_sprnv_2023			Chromosome	2024-06-12	JARFVL01	63
+GCA_910589775.1	Avena_eriantha_BYU132_v1_assembly	Avena eriantha			BYU132					Chromosome	2022-09-22	CAJUXJ01	2652
+GCA_023333625.1	ASM2333362v1	Bothriochloa decipiens				Australia	COB1_7			Chromosome	2022-05-12	JALGXP01	14671
+GCA_036936925.1	ASM3693692v1	Cenchrus fungigraminus			JUJUNCAO					Chromosome	2024-03-01	JAQONI01	96
+GCA_040144145.1	PSU_Pinf_1	Poa infirma					PSU_fei_2023			Chromosome	2024-06-12	JARFVM01	731
+GCA_963921465.1	WRC_timopheevii_genome_with_organelles	Triticum timopheevii								Chromosome	2024-01-13	CAWUFU02	1670
+GCA_036346355.1	KIB_Rrac_1	Rhipidocladum racemiflorum					GZH05			Chromosome	2024-02-02	JAYEVF01	134
+GCA_036346145.1	KIB_Olat_2	Olyra latifolia					14001			Chromosome	2024-02-02	JAYEVC01	43
+GCA_036346265.1	KIB_Mbac_1	Melocanna baccifera					GZH09			Chromosome	2024-02-02	JAYEVJ01	443
+GCA_021605145.1	ASM2160514v1	Aegilops bicornis					TB01			Chromosome	2022-01-26	JAHIAL01	172
+GCA_036346415.1	KIB_Rgui_2	Raddia guianensis					14019			Chromosome	2024-02-02	JAYEVB01	553
+GCA_036346255.1	KIB_Aluo_1	Ampelocalamus luodianensis					GZH07			Chromosome	2024-02-02	JAYEVH01	574
+GCA_036346245.1	KIB_Bamp_2	Bonia amplexicaulis					Liujx17006			Chromosome	2024-02-02	JAYGGG01	1113
+GCA_009725075.1	ASM972507v1	Coix aquatica			Daheishan					Chromosome	2019-12-04	RZMS01	2012
+GCA_036346395.1	KIB_Hcal_1	Hsuehochloa calcarea					GZH06			Chromosome	2024-02-02	JAYEVG01	116
+GCA_036346275.1	KIB_Ogla_1	Otatea glauca					GZH072			Chromosome	2024-02-02	JAYEVK01	484
+GCA_036346375.1	KIB_Gang_2	Guadua angustifolia					GZH04			Chromosome	2024-02-02	JAYEVE01	2068
+GCA_022036555.1	ASM2203655v1	Microstegium vimineum								Chromosome	2022-02-10	JAJDON01	460
+GCA_036689595.1	IICAR_Pnotatum_1.0	Paspalum notatum var. saurae				Cayasta	R1		Annotation submitted by Molecular Biology, Instituto de Investigaciones en Ciencias Agrarias de Rosario (IICAR-CONICET-UNR)	Chromosome	2024-02-18		10
+GCA_036872515.1	ASM3687251v1	Brachypodium hybridum				IBd483				Chromosome	2024-02-26		15
+GCA_036872525.1	ASM3687252v1	Brachypodium stacei				Bst99				Chromosome	2024-02-26		10
+GCA_009831255.1	Os117425RS1	Oryza sativa aromatic subgroup								Chromosome	2020-01-06	VYID01	69
+GCA_025175245.1	Teosinte	Zea mays subsp. parviglumis			Ames21814					Chromosome	2022-09-15	JAOALF01	428
+GCA_951341805.1	Hvulgare_HID380_BPGv2	Hordeum vulgare f. agriocrithon								Chromosome	2024-02-07	CATOAF01	1098
+GCA_003061485.1	PhalliiHAL_v2.1	Panicum hallii var. hallii		HAL2					Annotation submitted by DOE Joint Genome Institute	Chromosome	2018-04-25	QAVV01	144
+GCA_944222845.1	aegilops_speltoides_cv_tivon	Aegilops speltoides subsp. speltoides								Chromosome	2022-07-14	CALUEN01	182594
+GCA_025603265.1	ASM2560326v1	Themeda triandra					TtPh16-4			Chromosome	2022-10-07	JAOPFP01	42247
+GCA_014338645.1	ASM1433864v1	Triticum aestivum subsp. tibeticum					Zang1817			Chromosome	2020-08-31	JACSIS01	383261
+GCA_024500355.1	Salk_teff_dabbi_3.0	Eragrostis tef			Dabbi					Chromosome	2022-08-03	JAMPTX01	874
+GCA_020466025.1	ec_v3	Echinochloa crus-galli					STB08_2			Chromosome	2021-10-15	JAITYY01	2058
+GCA_021605185.1	ASM2160518v1	Aegilops searsii					TE01			Chromosome	2022-01-26	JAHHZK01	24621
+GCA_039639735.1	ASM3963973v1	Sorghum bicolor subsp. drummondii			S722					Chromosome	2024-05-14		10
+GCA_022117705.1	Zm-Mo17-REFERENCE-CAU-T2T-assembly	Zea mays			Mo17-2021					Complete Genome	2022-02-10	JAIRCI01	10
+GCF_904849725.1	MorexV3_pseudomolecules_assembly	Hordeum vulgare subsp. vulgare							NCBI Hordeum vulgare subsp. vulgare
+GCA_032594955.1	BC332	Panicum miliaceum					332			Chromosome	2023-10-12	JAVRNH01	580
+GCF_018294505.1	IWGSC CS RefSeq v2.1	Triticum aestivum			Chinese Spring				NCBI Triticum aestivum Annotation Release 100	Chromosome	2021-05-06	JAGHKL01	91588
+GCA_034140825.1	ASM3414082v1	Oryza sativa Japonica Group			Nipponbare		AGIS-1.0			Complete Genome	2023-12-06		12
+GCA_947561735.1	pearl_millet_23DB_ONT_assembly	Cenchrus americanus								Chromosome	2023-01-10		7
+GCA_033546955.1	ASM3354695v1	Sorghum bicolor			Hongyingzi					Complete Genome	2023-11-12		10
+GCA_005286985.2	Setaria_viridis_v4.0	Setaria viridis			A10				Annotation submitted by DOE Joint Genome Institute	Chromosome	2024-04-23	SNSE02	39
+GCA_039619375.1	ASM3961937v1	Oryza rufipogon					Y476			Chromosome	2024-05-13		12
+GCA_916181665.1	Oat OT3098 v2	Avena sativa								Chromosome	2022-02-02		22
+GCA_902687465.1	Rye_Lo7_2018_v1p1p1	Secale cereale								Chromosome	2021-01-26		8
+GCA_030063025.1	ASM3006302v1	Avena longiglumis					447			Chromosome	2023-05-22		7
+GCA_000005505.4	Brachypodium_distachyon_v3.0	Brachypodium distachyon		Bd21					Annotation submitted by JGI-PGF	Chromosome	2018-01-24	ADDN03	14
+GCA_016808335.1	P.virgatum_v5	Panicum virgatum		AP13					Annotation submitted by DOE Joint Genome Institute	Chromosome	2021-02-10	JABWAI01	1089
+GCA_019359855.2	Kyuss_2.0	Lolium perenne					Kyuss_39			Chromosome	2024-03-25	JAEVFB02	104
+GCA_019359855.1	MPB_Lper_Kyuss_1697	Lolium perenne					Kyuss_39			Chromosome	2021-07-28	JAEVFB01	1677
+GCA_002575655.2	Aet v5.0	Aegilops tauschii subsp. strangulata			AL8/78					Chromosome	2021-09-30	NWVB02	109196
+GCA_000147395.3	OglaRS2	Oryza glaberrima								Chromosome	2021-03-10	ADWL02	72
+GCA_958298935.1	lpPhrAust1.1	Phragmites australis								Chromosome	2023-07-06	CATQJE01	37
+GCA_022457205.1	ASM2245720v1	Saccharum spontaneum					Np-X			Chromosome	2022-03-04	JAKOGQ01	1033
+GCA_003073215.2	Tu2.1	Triticum urartu			G1812					Chromosome	2018-04-30	MKGO01	10204
+GCA_002162155.3	WEW_v2.1	Triticum dicoccoides				Zavitan	Atlit2015			Chromosome	2019-02-04	LSYQ02	148296
+GCA_030378355.1	ASM3037835v1	Eleusine indica					GLY-S			Chromosome	2023-07-06	JARKIM01	108
+GCA_030770085.1	ASM3077008v1	Oryza coarctata					Oco-Bangladesh			Chromosome	2023-08-24	JAULJY01	450
+GCA_030272315.1	ASM3027231v1	Paspalum vaginatum			SeaIsle2000					Chromosome	2023-06-16	JAMSGZ01	179
+GCA_000231095.3	ObraRS2	Oryza brachyantha								Chromosome	2021-03-10	AGAT02	73
+GCA_002211085.2	PHallii_v3.1	Panicum hallii		FIL2					Annotation submitted by DOE Joint Genome Institute	Chromosome	2018-05-01	NCQW02	1027
+GCA_022539505.1	APGP_CSIRO_Lrig_0.1	Lolium rigidum					FL_2022			Chromosome	2022-03-14	JAKKIG01	1764
+GCA_904067115.1	aegilops_sharonensis_1644_assembly	Aegilops sharonensis								Chromosome	2023-02-01	CAJFDF01	93484
+GCA_023614405.1	ASM2361440v1	Avena insularis			CN 108634					Chromosome	2022-06-02	JAJUPC01	879
+GCA_021605205.1	ASM2160520v1	Aegilops longissima					TL01			Chromosome	2022-01-26	JAHIAM01	21779
+GCA_902859565.1	Fonio_CM05836	Digitaria exilis								Chromosome	2021-02-01		19
