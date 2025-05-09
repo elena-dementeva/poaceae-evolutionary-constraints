@@ -32,8 +32,6 @@ Students are provided with a reference-based multiple sequence alignment of 80 P
 
 This is an exploratory project encouraging **independent hypothesis formulation** and **flexible workflows**. A high-performance server is available for conducting computationally intensive steps.
 
----
-
 ## Table of Contents
 
 - [Description](##description)
@@ -42,7 +40,6 @@ This is an exploratory project encouraging **independent hypothesis formulation*
 - [Running the Analysis](##running-the-analysis)
 - [Bibliography](##Bibliography)
 
----
 
 ## Description
 
@@ -61,13 +58,6 @@ This project includes two complementary analyses:
 ---
 
 ## Repository Structure
-
-### Environment Setup
-
-Python
-
-R packages
-
 
 ### Results
 
@@ -128,7 +118,7 @@ Statistical comparison was performed using **Wilcoxon tests**, with **FDR correc
   → Potentially **conserved** in C₄ lineages
 - **No genes** showed opposite-direction significance
 
-#### Functional Enrichment of C₃-Shifted Genes
+##### Functional Enrichment of C₃-Shifted Genes
 
 C₃-associated genes (i.e., evolving faster in C₃) were significantly enriched for the following functions:
 
@@ -159,10 +149,22 @@ These categories reflect core **photosynthetic and regulatory functions**. Their
 
 ![img](images/Category_Heatmap_C3_C4.png)
 
-#### Biological Interpretation
+##### Biological Interpretation
 
 - **Genes with longer RTT in C₄** species may represent **adaptations** that evolved under **increased constraint** to maintain optimized function.
 - **Genes with longer RTT in C₃** species likely underwent **relaxed selection** or **adaptive divergence** in C₃ lineages.
+
+---
+
+### Running the Analysis
+
+#### Environment Setup
+
+Python
+
+R packages
+
+#### Constraint Analysis Run
 
 ##### 1. Process phyloP data
 
@@ -185,29 +187,20 @@ bash scripts/generate_bindata.sh
 ```
 This script:
 
-Creates 100kb windows using bedtools makewindows
+- Creates 100kb windows using `bedtools makewindows`
+- Computes the following features per bin:
+  - Total number of bases with phyloP scores
+  - Number of conserved positions
+  - Length of overlapping CDS and exons
+  - Gene count
+  - Intergenic length
+  - GC content (via `bedtools nuc`)
+  - Number of overlaps with TE and ISBP elements
+  - Mean phyloP score for significant bases
+  - List of overlapping gene names
 
-Computes the following features per bin:
+**Output:** `merged_bindata.100000.tsv`
 
-Total number of bases with phyloP scores
-
-Number of conserved positions
-
-Length of overlapping CDS and exons
-
-Gene count
-
-Intergenic length
-
-GC content (via bedtools nuc)
-
-Number of overlaps with TE and ISBP elements
-
-Mean phyloP score for significant bases
-
-List of overlapping gene names
-
-Output: merged_bindata.100000.tsv
 
 ##### 4. Identify constrained windows
 
