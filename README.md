@@ -319,7 +319,6 @@ Paste the sequences and run analysis
 
 ```psRNATarget_filtered_*.txt```: Filtered miRNA targets
 
-```gProfiler_results.*```: Functional annotation results
 
 ##### Parameters  
 Key adjustable parameters:  
