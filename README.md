@@ -236,16 +236,308 @@ Applies FDR correction to identify significantly shifted genes
 
 - `genes_C3.txt`: genes evolving faster in C3 lineages  
 - `genes_C4.txt`: genes evolving faster in C4 lineages  
-- `root_to_tip_C3vsC4.csv`: full table with RTT values, p-values, q-values  
+- `root_to_tip_C3vsC4.csv`: full table with RTT values, p-values, q-values 
+
+#### miRNA Target Analysis Pipeline  
+
+This pipeline identifies and analyzes miRNA targets in conserved genomic regions of *Triticum aestivum* (bread wheat), with functional annotation via GO term analysis.  
+
+##### Pipeline Overview  
+
+1. Convert conserved regions (TSV) to BED format with 500bp flanking regions
+2. Extract genomic sequences in FASTA format
+3. Identify miRNA targets using psRNATarget
+4. Filter miRNA-target pairs by binding strength
+5. Perform GO term enrichment analysis
+
+##### Requirements  
+
+- Conda (Miniconda or Anaconda)
+- Unix-like environment (Linux/macOS)
+- Web browser for online tools
+
+##### Installation  
+
+```bash
+conda env create -f env.yaml
+conda activate mirna_analysis
+```
+
+##### Usage  
+
+1. Prepare Genomic Regions  
+Convert TSV to BED format with 500bp flanking regions:  
+
+```bash
+awk -v OFS='\t' 'NR > 1 {start = ($2 - 500 < 0) ? 0 : $2 - 500; print $1, start, $3 + 500, $4, $5}' input.tsv > regions_with_window.bed
+```
+
+2. Extract Sequences  
+Extract FASTA sequences using your preferred tool (e.g., bedtools):  
+
+```bash
+bedtools getfasta -fi reference_genome.fa -bed regions_with_window.bed -fo extracted_regions.fa
+```
+
+3. Identify miRNA Targets  
+Run the miRNA search script:  
+
+```bash
+./miRNA_search_script.sh -i extracted_regions.fa
+```
+
+Then:  
+
+Visit [psRNATarget](https://www.zhaolab.org/psRNATarget/)  
+
+Paste sequences from ```extracted_regions.fa```  
+
+Submit job and download results (```psRNATargetJob-*.txt```)  
 
 
-## Bibliography
+4. Filter miRNA Targets   
+Filter by binding strength (lower expectation = stronger binding):  
 
-1. **Zoonomia Consortium**. (2020). A comparative genomics multitool for scientific discovery and conservation. *Nature*, 587, 240–245. https://doi.org/10.1038/s41586-020-2876-6
+```bash
+python psTargetFinder_filtrator.py -i psRNATargetJob.txt -o psRNATarget_filtered_2_5.txt --max_expectation 2.5
+```
+5. GO Term Analysis  
+Copy the target sequences (column 2) from filtered results  
 
-2. **Avraham A. Levy**, **Moshe Feldman**. (2022). Evolution and origin of bread wheat. *The Plant Cell*, 34, 2549–2567. https://doi.org/10.1093/plcell/koac130
+Visit [g:Profiler](https://biit.cs.ut.ee/gprofiler/gost)  
 
-3. **Hong Cheng**, **Jing Liu**, **Jia Wen**, **Xiaojun Nie**, et al. (2019). Frequent intra- and inter-species introgression shapes the landscape of genetic variation in bread wheat. *BMC Genomics*. https://doi.org/10.1186/s13059-019-1744-x
+Paste the sequences and run analysis  
 
-4. **Matthew J. Christmas**, **E. C. Hare**, **T. L. Capellini**, et al. (2023). Evolutionary constraint and innovation across hundreds of placental mammals. *Science*, 380, eabn3943. https://doi.org/10.1126/science.abn3943
 
+##### Output Files  
+
+```regions_with_window.bed```: Genomic regions with flanking sequences
+
+```extracted_regions.fa```: FASTA sequences of target regions
+
+```psRNATargetJob-*.txt```: Raw miRNA target predictions
+
+```psRNATarget_filtered_*.txt```: Filtered miRNA targets
+
+
+##### Parameters  
+Key adjustable parameters:  
+
+- Flanking region size (change the 500 value in ```awk``` command)
+
+- miRNA-target binding threshold (```--max_expectation``` in ```filtrator.py```)
+
+- Organism selection in g:Profiler (*Triticum aestivum*)
+
+##### Dependencies
+All dependencies are listed in (```env.yaml```), including:
+
+  - python=3.12.2
+  - viennarna=2.7.0
+  - blast=2.16.0
+  - parallel=20250322
+  - bedtools=2.31.1
+  - pandas=2.2.3
+  - numpy=2.2.5
+
+##### Troubleshooting  
+
+Ensure the reference genome is in the same directory for sequence extraction
+
+Check file permissions for scripts (```chmod +x miRNA_search_script.sh```)
+
+Verify internet connection for web tools
+
+#### Transcription Factor Binding Sites Search and Identification of Neighbouring Genes  
+
+This extension identifies transcription factor binding sites (TFBS) in conserved genomic regions and analyzes their nearest genes with functional annotation via GO term analysis.
+
+##### Pipeline Overview
+
+1. Convert conserved regions (TSV) to BED format with 500bp flanking regions to capture potential TFBSs
+2. Extract genomic sequences in FASTA format
+3. Identify TFBS motifs using MEME Suite
+4. Scan sequences for motif occurrences with FIMO
+5. Find nearest genes to TFBS
+6. Perform GO term enrichment analysis with g:Profiler
+
+##### Requirements
+
+- MEME Suite (v5.5.7)
+- bedtools (v2.31.1)
+- Internet access for MEME Suite web tools
+
+##### Usage
+
+1. Identify Transcription Factor Binding Sites Search Regions
+
+```bash
+# Convert conserved regions to BED with flanks
+awk 'NR>1 {
+    start = $3 - 500;
+    end = $4 + 500;
+    if (start < 0) start = 0;
+    print $1 "\t" start "\t" end "\t" "constrained_region_"NR-1 "\t" $6 "\t" "."
+}' input.tsv > conserved_regions.bed
+
+# Extract sequences
+bedtools getfasta -fi reference_genome.fa -bed conserved_regions.bed -fo tf_search_regions.fa
+```
+
+2. Run MEME Motif Discovery
+
+- 1. Visit [MEME Suite](https://meme-suite.org/meme/tools/meme)
+- 2. Upload `tf_search_regions.fa`
+- 3. Recommended parameters (adjustable):
+   - Classic motif discovery mode
+   - DNA, RNA or protein sequence alphabet
+   - Any distribution
+   - Number of motifs: 3
+   - Minimum width: 6bp
+   - Maximum width: 50bp
+   - Both strand search
+- 4. Download results (`meme.txt`)
+
+3. Scan for Motif Occurrences  
+
+```bash
+fimo --oc fimo_results --thresh 1e-4 meme.txt tf_search_regions.fa
+```
+
+4. Prepare Gene Annotation  
+
+```bash
+# Convert GFF3 to BED format
+awk '$3 == "gene" { 
+    split($9, attr, ";"); 
+    for (i in attr) { 
+        if (attr[i] ~ /^ID=/) { 
+            split(attr[i], id, "="); 
+            gene_id = id[2]; 
+        } 
+    } 
+    print $1 "\t" $4 "\t" $5 "\t" gene_id "\t" $6 "\t" $7 
+}' annotation.gff3 > genes_annotation.bed
+```
+
+5. Find Nearest Genes  
+
+```bash
+# Process FIMO results - convert TSV to BED
+awk 'NR>1 {
+    start = $4 - 1;
+    end = $5;
+    if (start >= 0 && end >= 0) {
+        print $3 "\t" start "\t" end "\t" $2 "\t" $7 "\t" $6;
+    }
+}' fimo_results/fimo.tsv > fimo_results/fimo_corrected.bed
+
+# Sort and find nearest genes
+bedtools sort -i fimo_results/fimo_corrected.bed > fimo_results/fimo_sorted.bed
+bedtools closest -a fimo_results/fimo_sorted.bed -b genes_annotation.bed -D b > nearest_genes.bed
+
+# Extract unique genes within 10kb (adjustable)
+awk '$13 != -1 && $13 <= 10000 {print $10}' nearest_genes.bed | sort -u > tf_target_genes.txt
+```
+
+6. GO Term Analysis  
+
+1. Visit [g:Profiler](https://biit.cs.ut.ee/gprofiler/gost)
+2. Upload `tf_target_genes.txt`
+3. Select *Triticum aestivum* as organism
+4. Run enrichment analysis
+
+##### Additional Output Files
+
+`conserved_regions.bed`: Flanked genomic regions for TFBS search  
+`tf_search_regions.fa`: Extracted sequences for motif discovery  
+`fimo_results/`: Directory containing TFBS predictions  
+`nearest_genes.bed`: All TFBS-gene associations  
+`tf_target_genes.txt`: Final target genes for enrichment  
+
+##### Key Parameters
+
+- Flanking region size (adjust 500bp in awk command)
+- MEME motif discovery parameters (mode, distribution, number, width etc)
+- FIMO p-value threshold (`--thresh`)
+- Maximum distance to consider gene association (10kb in example)
+
+##### Integration Notes
+
+- Both pipelines share the initial conserved region identification
+- Results can be compared between miRNA targets and TF targets
+- Combined analysis possible by merging `target_genes.txt` and `tf_target_genes.txt` for GO analysis
+
+##### Limitations
+
+The above instructions analyze one chromosomal sequence per run. For multiple sequences, consider using GNU Parallel or similar tools to automate the process. 
+miRNA predictions are based on miRBase database completeness and is subject to change. The pipeline is designed for *Triticum aestivum* and may require adjustments for other species.
+
+##### References  
+
+Core Tools  
+1. **MEME Suite**  
+   Bailey, T.L., Johnson, J., Grant, C.E., & Noble, W.S. (2015). *The MEME Suite*. Nucleic Acids Research, 43(W1), W39-W49.  
+   https://doi.org/10.1093/nar/gkv416  
+
+2. **g:Profiler**  
+   Raudvere, U., Kolberg, L., Kuzmin, I., et al. (2019). *g:Profiler: a web server for functional enrichment analysis*. Nucleic Acids Research, 47(W1), W191-W198.  
+   https://doi.org/10.1093/nar/gkz369  
+
+3. **psRNATarget**  
+   Dai, X., Zhuang, Z., & Zhao, P.X. (2018). *psRNATarget: a plant small RNA target analysis server (2017 release)*. Nucleic Acids Research, 46(W1), W49-W54.  
+   https://doi.org/10.1093/nar/gky316  
+
+Bioinformatics Dependencies  
+4. **bedtools**  
+   Quinlan, A.R. & Hall, I.M. (2010). *BEDTools: a flexible suite of utilities for comparing genomic features*. Bioinformatics, 26(6), 841-842.  
+   https://doi.org/10.1093/bioinformatics/btq033  
+
+5. **ViennaRNA**  
+   Lorenz, R., Bernhart, S.H., Höner zu Siederdissen, C., et al. (2011). *ViennaRNA Package 2.0*. Algorithms for Molecular Biology, 6, 26.  
+   https://doi.org/10.1186/1748-7188-6-26  
+
+6. **BLAST**  
+   Camacho, C., Coulouris, G., Avagyan, V., et al. (2009). *BLAST+: architecture and applications*. BMC Bioinformatics, 10, 421.  
+   https://doi.org/10.1186/1471-2105-10-421  
+
+7. **GNU Parallel**  
+   Tange, O. (2025). *GNU Parallel 20250422 ('Tariffs')*. Zenodo.  
+   https://doi.org/10.5281/zenodo.15265748  
+
+Python Libraries  
+8. **pandas**  
+   McKinney, W. (2010). *Data Structures for Statistical Computing in Python*. Proceedings of the 9th Python in Science Conference.  
+   https://doi.org/10.25080/Majora-92bf1922-00a  
+
+9. **numpy**  
+   Harris, C.R., Millman, K.J., van der Walt, S.J., et al. (2020). *Array programming with NumPy*. Nature, 585, 357-362.  
+   https://doi.org/10.1038/s41586-020-2649-2  
+
+---
+
+## Bibliography  
+
+1. **Axtell, M. J., & Meyers, B. C.** (2018). Revisiting Criteria for Plant MicroRNA Annotation in the Era of Big Data. *The Plant Cell*, 30(2), 272–284. https://doi.org/10.1105/tpc.17.00851  
+
+2. **Avraham A. Levy, & Moshe Feldman**. (2022). Evolution and origin of bread wheat. *The Plant Cell*, 34, 2549–2567. https://doi.org/10.1093/plcell/koac130  
+
+3. **Bulyk, M. L.** (2003). Computational prediction of transcription-factor binding site locations. *Genome Biology*, 5(1), 201. https://doi.org/10.1186/gb-2003-5-1-201  
+
+4. **Chen, Z.-Y., Guo, X.-J., Chen, Z.-X., Chen, W.-Y., & Wang, J.-R.** (2017). Identification and positional distribution analysis of transcription factor binding sites for genes from the wheat fl-cDNA sequences. *Bioscience Biotechnology and Biochemistry*, 81(6), 1125–1135. https://doi.org/10.1080/09168451.2017.1295803  
+
+5. **Cheng, H., Liu, J., Wen, J., Nie, X., et al.** (2019). Frequent intra- and inter-species introgression shapes the landscape of genetic variation in bread wheat. *BMC Genomics*. https://doi.org/10.1186/s13059-019-1744-x  
+
+6. **Christmas, M. J., Hare, E. C., Capellini, T. L., et al.** (2023). Evolutionary constraint and innovation across hundreds of placental mammals. *Science*, 380, eabn3943. https://doi.org/10.1126/science.abn3943  
+
+7. **Evans, C. E. B., Ramesh Arunkumar, & Philippa Borrill.** (2022). Transcription factor retention through multiple polyploidization steps in wheat. *G3 Genes|Genomes|Genetics*, 12(8). https://doi.org/10.1093/g3journal/jkac147  
+
+8. **Guo, A.-Y., Chen, X., Gao, G., Zhang, H., Zhu, Q.-H., Liu, X.-C., Zhong, Y.-F., Gu, X., He, K., & Luo, J.** (2007). PlantTFDB: a comprehensive plant transcription factor database. *Nucleic Acids Research*, 36(Database), D966–D969. https://doi.org/10.1093/nar/gkm841  
+
+9. **Gupta, S., & Shankar, R.** (2024). Comprehensive analysis of computational approaches in plant transcription factors binding regions discovery. *Heliyon*, 10(20), e39140. https://doi.org/10.1016/j.heliyon.2024.e39140  
+
+10. **Thakur, V., Wanchana, S., Xu, M., Bruskiewich, R., Quick, W. P., Mosig, A., & Zhu, X.-G.** (2011). Characterization of statistical features for plant microRNA prediction. *BMC Genomics*, 12(1). https://doi.org/10.1186/1471-2164-12-108  
+
+11. **Zoonomia Consortium.** (2020). A comparative genomics multitool for scientific discovery and conservation. *Nature*, 587, 240–245. https://doi.org/10.1038/s41586-020-2876-6  
+
+---
