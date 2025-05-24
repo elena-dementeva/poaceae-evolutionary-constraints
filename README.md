@@ -34,13 +34,14 @@ This is an exploratory project encouraging **independent hypothesis formulation*
 - [Description](#description)
 - [Results](#results)
   - [Constraint Analysis](#constraint-analysis)
-  - [Evolutionary Analysis of Genes Associated with C₃/C₄ Photosynthesis](#evolutionary-analysis-of-genes-associated-with-c3c4-photosynthesis)
+  - [Evolutionary Analysis of Genes Associated with C3/C4 Photosynthesis](#evolutionary-analysis-of-genes-associated-with-c3c4-photosynthesis)
 - [Running the Analysis](#running-the-analysis)
   - [Constraint Analysis Run](#constraint-analysis-run)
-  - [C₃/C₄ Root-to-Tip Analysis Run](#c3c4-root-to-tip-analysis-run)
+  - [C3/C4 Root-to-Tip Analysis Run](#c3c4-root-to-tip-analysis-run)
   - [miRNA Target Analysis Pipeline](#mirna-target-analysis-pipeline)
   - [Transcription Factor Binding Sites Search and Identification of Neighbouring Genes](#transcription-factor-binding-sites-search-and-identification-of-neighbouring-genes)
 - [References](#references)
+
 
 ## Description
 
@@ -104,7 +105,7 @@ Some constrained windows lack annotated genes (№47, `gene = NA`), indicating p
 
 ------------------------------------------------------------------------
 
-### Evolutionary Analysis of Genes Associated with C₃/C₄ Photosynthesis
+### Evolutionary Analysis of Genes Associated with C3/C4 Photosynthesis
 
 C₃ photosynthesis is the most common carbon fixation pathway, especially in temperate climates. It relies on the enzyme **RuBisCO**, which is prone to **photorespiration** under high temperatures or low CO₂ concentrations.
 
@@ -533,7 +534,7 @@ awk '$13 != -1 && $13 <= 10000 {print $10}' nearest_genes.bed | sort -u > tf_tar
 
 ## References
 
-Core Tools\
+Core Tools
 1. **MEME Suite**\
 Bailey, T.L., Johnson, J., Grant, C.E., & Noble, W.S. (2015). *The MEME Suite*. Nucleic Acids Research, 43(W1), W39-W49.\
 <https://doi.org/10.1093/nar/gkv416>
@@ -546,7 +547,7 @@ Bailey, T.L., Johnson, J., Grant, C.E., & Noble, W.S. (2015). *The MEME Suite*. 
     Dai, X., Zhuang, Z., & Zhao, P.X. (2018). *psRNATarget: a plant small RNA target analysis server (2017 release)*. Nucleic Acids Research, 46(W1), W49-W54.\
     <https://doi.org/10.1093/nar/gky316>
 
-Bioinformatics Dependencies\
+Bioinformatics Dependencies
 4. **bedtools**\
 Quinlan, A.R. & Hall, I.M. (2010). *BEDTools: a flexible suite of utilities for comparing genomic features*. Bioinformatics, 26(6), 841-842.\
 <https://doi.org/10.1093/bioinformatics/btq033>
@@ -563,7 +564,7 @@ Quinlan, A.R. & Hall, I.M. (2010). *BEDTools: a flexible suite of utilities for 
     Tange, O. (2025). *GNU Parallel 20250422 ('Tariffs')*. Zenodo.\
     <https://doi.org/10.5281/zenodo.15265748>
 
-Python Libraries\
+Python Libraries
 8. **pandas**\
 McKinney, W. (2010). *Data Structures for Statistical Computing in Python*. Proceedings of the 9th Python in Science Conference.\
 <https://doi.org/10.25080/Majora-92bf1922-00a>
@@ -572,7 +573,7 @@ McKinney, W. (2010). *Data Structures for Statistical Computing in Python*. Proc
     Harris, C.R., Millman, K.J., van der Walt, S.J., et al. (2020). *Array programming with NumPy*. Nature, 585, 357-362.\
     <https://doi.org/10.1038/s41586-020-2649-2>
 
-Bibliography\
+Bibliography
 
 10.  **Axtell, M. J., & Meyers, B. C.** (2018). Revisiting Criteria for Plant MicroRNA Annotation in the Era of Big Data. *The Plant Cell*, 30(2), 272–284. <https://doi.org/10.1105/tpc.17.00851>
 
