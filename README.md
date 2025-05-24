@@ -33,13 +33,13 @@ This is an exploratory project encouraging **independent hypothesis formulation*
 
 ## Table of Contents
 
--   [Description](##description)
--   [Repository Structure](##repository-structure)
--   [Results](##results)
--   [Running the Analysis](##running-the-analysis)
--   [Bibliography](##Bibliography)
+-   [Description](#description)
+-   [Repository Structure](#repository-structure)
+-   [Results](#results)
+-   [Running the Analysis](#running-the-analysis)
+-   [Bibliography](#bibliography)
 
-## Description
+## Description {#description}
 
 This project includes two complementary analyses:
 
@@ -54,11 +54,11 @@ This project includes two complementary analyses:
 
 ------------------------------------------------------------------------
 
-## Repository Structure
+## Repository Structure {#repository-structure}
 
-### Results
+### Results {#results}
 
-#### Constraint Analysis
+#### Constraint Analysis {#constraint-analysis}
 
 **Output table:** `results/merged_bindata.100000.tsv`
 
@@ -151,7 +151,7 @@ These categories reflect core **photosynthetic and regulatory functions**. Their
 
 ------------------------------------------------------------------------
 
-### Running the Analysis
+### Running the Analysis {#running-the-analysis}
 
 #### Environment Setup
 
@@ -249,7 +249,7 @@ This tool is useful for:
 -   Highlighting overlapping genomic features
 -   Producing phyloP profiles ![img](images/phyloP_chunk_8.png)
 
-#### C3/C4 Root-to-Tip Analysis
+#### C3/C4 Root-to-Tip Analysis {#c3c4-root-to-tip-analysis}
 
 ##### 1. Prepare per-gene alignments
 
@@ -280,7 +280,7 @@ Applies FDR correction to identify significantly shifted genes
 -   `genes_C4.txt`: genes evolving faster in C4 lineages\
 -   `root_to_tip_C3vsC4.csv`: full table with RTT values, p-values, q-values
 
-#### miRNA Target Analysis Pipeline
+#### miRNA Target Analysis Pipeline {#mirna-target-analysis-pipeline}
 
 This pipeline identifies and analyzes miRNA targets in conserved genomic regions of *Triticum aestivum* (bread wheat), with functional annotation via GO term analysis.
 
@@ -572,7 +572,7 @@ McKinney, W. (2010). *Data Structures for Statistical Computing in Python*. Proc
 
 ------------------------------------------------------------------------
 
-## Bibliography
+## Bibliography {#bibliography}
 
 1.  **Axtell, M. J., & Meyers, B. C.** (2018). Revisiting Criteria for Plant MicroRNA Annotation in the Era of Big Data. *The Plant Cell*, 30(2), 272–284. <https://doi.org/10.1105/tpc.17.00851>
 
