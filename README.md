@@ -20,45 +20,55 @@ Conservation of specific sequences in these functionally relevant regions, in co
 
 ## Purpose
 
-The purpose of this project is to explore evolutionary constraints and innovations across the grass family (Poaceae) using multispecies whole-genome alignments and phyloP conservation scores.
-
-Students are provided with a reference-based multiple sequence alignment of 80 Poaceae genomes (reference: *Triticum aestivum*, bread wheat). The analysis is divided into the following goals:
+The purpose of this project is to explore evolutionary constraints in *Triticum aestivum* using multispecies across the grass family (Poaceae) whole-genome alignments and phyloP scores. Our analyses focused on subgenome A of wheat and included:
 
 -   Identify regions of **conserved** and **accelerated** evolution across the genome using phyloP scores.
 -   Annotate conserved segments, most of which are expected to lie in **non-coding regions**.
 -   Investigate **gene-specific evolutionary rates** by comparing root-to-tip distances between species, and detect **clade-specific acceleration**, particularly between C₃ and C₄ lineages.
--   Explore associations between evolutionary signals and **functional phenotypic traits**.
+-   Functional annotation of regulatory elements, such as **miRNA and TFBS motifs**.
 
 This is an exploratory project encouraging **independent hypothesis formulation** and **flexible workflows**. A high-performance server is available for conducting computationally intensive steps.
 
 ## Table of Contents
 
--   [Description](#description)
--   [Repository Structure](#repository-structure)
--   [Results](#results)
--   [Running the Analysis](#running-the-analysis)
--   [Bibliography](#bibliography)
+- [Description](#description)
+- [Results](#results)
+  - [Constraint Analysis](#constraint-analysis)
+  - [Evolutionary Analysis of Genes Associated with C₃/C₄ Photosynthesis](#evolutionary-analysis-of-genes-associated-with-c3c4-photosynthesis)
+- [Running the Analysis](#running-the-analysis)
+  - [Constraint Analysis Run](#constraint-analysis-run)
+  - [C₃/C₄ Root-to-Tip Analysis Run](#c3c4-root-to-tip-analysis-run)
+  - [miRNA Target Analysis Pipeline](#mirna-target-analysis-pipeline)
+  - [Transcription Factor Binding Sites Search and Identification of Neighbouring Genes](#transcription-factor-binding-sites-search-and-identification-of-neighbouring-genes)
+- [References](#references)
 
 ## Description
 
-This project includes two complementary analyses:
+This project includes a few complementary analyses:
 
 1.  **Constraint analysis based on phyloP scores:**
-    -   Identifies 100kb genomic windows enriched for significantly conserved positions (phyloP q \< 0.05).
-    -   Integrates annotations (CDS, exons, genes, TEs, ISBPs, GC content).
+    -   Calculates per-nucleotide phyloP scores from a 97-species Poaceae alignment using wheat as the reference.
+    -   Applies FDR correction (q < 0.05) to identify significantly conserved positions.
+    -   Divides the genome into 100 kb windows.
+    -   Computes features for each window (CDS, exons, genes, TEs, ISBPs, GC content).
+    -   Fits a regression model to predict expected conservation and flags outliers via standardized residuals.
+    -   Applies FDR correction to detect significantly constrained windows.
     -   Produces Manhattan plots highlighting conserved and potentially regulatory regions.
 2.  **Root-to-tip evolutionary rate analysis (C3 vs C4):**
-    -   Constructs phylogenetic trees for each gene across species.
-    -   Compares root-to-tip distances between C3 and C4 species using Wilcoxon test.
+    -   Constructs phylogenetic trees from alignments (.fa) for each gene across chosen species to estimate evolutionary distances.
+    -   Compares root-to-tip distances (RTT) between C3 and C4 species using Wilcoxon test.
     -   Applies FDR correction to identify genes with significantly different rates.
+3.  **Regulatory Motif Annotation in Annotation in Conserved Non-Coding Elements (CNEs)**
+    -   Scans conserved non-coding regions for regulatory signals.
+    -   Identifies miRNA precursors by detecting hairpin structures and predicting targets.
+    -   Detects transcription factor binding motifs (TFBS) using MEME/FIMO.
+    -   Applies GO enrichment analysis to infer functions of associated genes.
 
 ------------------------------------------------------------------------
 
-## Repository Structure
+## Results
 
-### Results
-
-#### Constraint Analysis
+### Constraint Analysis
 
 **Output table:** `results/merged_bindata.100000.tsv`
 
@@ -94,13 +104,13 @@ Some constrained windows lack annotated genes (№47, `gene = NA`), indicating p
 
 ------------------------------------------------------------------------
 
-#### Evolutionary Analysis of Genes Associated with C₃/C₄ Photosynthesis
+### Evolutionary Analysis of Genes Associated with C₃/C₄ Photosynthesis
 
 C₃ photosynthesis is the most common carbon fixation pathway, especially in temperate climates. It relies on the enzyme **RuBisCO**, which is prone to **photorespiration** under high temperatures or low CO₂ concentrations.
 
 C₄ photosynthesis is an adaptation to **hot and dry environments**. It begins with the fixation of CO₂ into 4-carbon compounds in mesophyll cells. These compounds are transported to **bundle-sheath cells**, where CO₂ is released into a high-concentration zone for RuBisCO. This **reduces photorespiration** and increases efficiency.
 
-##### Summary of Evolutionary Analysis
+#### Summary of Evolutionary Analysis
 
 We analyzed evolutionary divergence between C₃ and C₄ species by calculating **root-to-tip distances (RTT)** in gene trees constructed from aligned sequences.\
 Statistical comparison was performed using **Wilcoxon tests**, with **FDR correction** applied to obtain q-values.
@@ -114,9 +124,9 @@ Statistical comparison was performed using **Wilcoxon tests**, with **FDR correc
     → Potentially **conserved** in C₄ lineages
 -   **No genes** showed opposite-direction significance
 
-##### Functional Enrichment of C₃-Shifted Genes
+#### Functional Enrichment of C₃-Shifted Genes
 
-C₃-associated genes (i.e., evolving faster in C₃) were significantly enriched for the following functions:
+C₃-associated genes (evolving faster in C₃) were significantly enriched for the following functions:
 
 -   **Oxidoreductase activity**\
     Involved in redox metabolism, key for photosynthetic electron transport
@@ -144,24 +154,18 @@ These categories reflect core **photosynthetic and regulatory functions**. Their
 
 ![img](images/Category_Heatmap_C3_C4.png)
 
-##### Biological Interpretation
+#### Biological Interpretation
 
 -   **Genes with longer RTT in C₄** species may represent **adaptations** that evolved under **increased constraint** to maintain optimized function.
 -   **Genes with longer RTT in C₃** species likely underwent **relaxed selection** or **adaptive divergence** in C₃ lineages.
 
 ------------------------------------------------------------------------
 
-### Running the Analysis
+## Running the Analysis
 
-#### Environment Setup
+### Constraint Analysis Run
 
-Python
-
-R packages
-
-#### Constraint Analysis Run
-
-##### 1. Process phyloP data
+#### 1. Process phyloP data
 
 ``` bash
 python scripts/process_phyloP_paral.py data/roast.maf
@@ -169,7 +173,7 @@ python scripts/process_phyloP_paral.py data/roast.maf
 
 This script processes phyloP scores from a MAF file and applies FDR correction to identify significantly conserved positions (q \< 0.05)
 
-##### 2. Define conserved regions
+#### 2. Define conserved regions
 
 ``` bash
 python scripts/find_conserved_multi.py
@@ -249,9 +253,9 @@ This tool is useful for:
 -   Highlighting overlapping genomic features
 -   Producing phyloP profiles ![img](images/phyloP_chunk_8.png)
 
-#### C3/C4 Root-to-Tip Analysis {#c3c4-root-to-tip-analysis}
+### C3/C4 Root-to-Tip Analysis Run
 
-##### 1. Prepare per-gene alignments
+#### 1. Prepare per-gene alignments
 
 Use gene coordinates and the MAF file to extract one alignment per gene. Convert each MAF block into FASTA format using
 
@@ -280,11 +284,11 @@ Applies FDR correction to identify significantly shifted genes
 -   `genes_C4.txt`: genes evolving faster in C4 lineages\
 -   `root_to_tip_C3vsC4.csv`: full table with RTT values, p-values, q-values
 
-#### miRNA Target Analysis Pipeline {#mirna-target-analysis-pipeline}
+### miRNA Target Analysis Pipeline
 
 This pipeline identifies and analyzes miRNA targets in conserved genomic regions of *Triticum aestivum* (bread wheat), with functional annotation via GO term analysis.
 
-##### Pipeline Overview
+#### Pipeline Overview
 
 1.  Convert conserved regions (TSV) to BED format with 500bp flanking regions
 2.  Extract genomic sequences in FASTA format
@@ -292,20 +296,20 @@ This pipeline identifies and analyzes miRNA targets in conserved genomic regions
 4.  Filter miRNA-target pairs by binding strength
 5.  Perform GO term enrichment analysis
 
-##### Requirements
+#### Requirements
 
 -   Conda (Miniconda or Anaconda)
 -   Unix-like environment (Linux/macOS)
 -   Web browser for online tools
 
-##### Installation
+#### Installation
 
 ``` bash
 conda env create -f env.yaml
 conda activate mirna_analysis
 ```
 
-##### Usage
+#### Usage
 
 1.  Prepare Genomic Regions\
     Convert TSV to BED format with 500bp flanking regions:
@@ -390,11 +394,11 @@ Check file permissions for scripts (`chmod +x miRNA_search_script.sh`)
 
 Verify internet connection for web tools
 
-#### Transcription Factor Binding Sites Search and Identification of Neighbouring Genes
+### Transcription Factor Binding Sites Search and Identification of Neighbouring Genes
 
 This extension identifies transcription factor binding sites (TFBS) in conserved genomic regions and analyzes their nearest genes with functional annotation via GO term analysis.
 
-##### Pipeline Overview
+#### Pipeline Overview
 
 1.  Convert conserved regions (TSV) to BED format with 500bp flanking regions to capture potential TFBSs
 2.  Extract genomic sequences in FASTA format
@@ -403,13 +407,13 @@ This extension identifies transcription factor binding sites (TFBS) in conserved
 5.  Find nearest genes to TFBS
 6.  Perform GO term enrichment analysis with g:Profiler
 
-##### Requirements
+#### Requirements
 
 -   MEME Suite (v5.5.7)
 -   bedtools (v2.31.1)
 -   Internet access for MEME Suite web tools
 
-##### Usage
+#### Usage
 
 1.  Identify Transcription Factor Binding Sites Search Regions
 
@@ -504,7 +508,7 @@ awk '$13 != -1 && $13 <= 10000 {print $10}' nearest_genes.bed | sort -u > tf_tar
 
 10. Run enrichment analysis
 
-##### Additional Output Files
+#### Additional Output Files
 
 `conserved_regions.bed`: Flanked genomic regions for TFBS search\
 `tf_search_regions.fa`: Extracted sequences for motif discovery\
@@ -512,24 +516,22 @@ awk '$13 != -1 && $13 <= 10000 {print $10}' nearest_genes.bed | sort -u > tf_tar
 `nearest_genes.bed`: All TFBS-gene associations\
 `tf_target_genes.txt`: Final target genes for enrichment
 
-##### Key Parameters
+#### Key Parameters
 
 -   Flanking region size (adjust 500bp in awk command)
 -   MEME motif discovery parameters (mode, distribution, number, width etc)
 -   FIMO p-value threshold (`--thresh`)
 -   Maximum distance to consider gene association (10kb in example)
 
-##### Integration Notes
+#### Integration Notes
 
 -   Both pipelines share the initial conserved region identification
 -   Results can be compared between miRNA targets and TF targets
 -   Combined analysis possible by merging `target_genes.txt` and `tf_target_genes.txt` for GO analysis
 
-##### Limitations
+------------------------------------------------------------------------
 
-The above instructions analyze one chromosomal sequence per run. For multiple sequences, consider using GNU Parallel or similar tools to automate the process. miRNA predictions are based on miRBase database completeness and is subject to change. The pipeline is designed for *Triticum aestivum* and may require adjustments for other species.
-
-##### References
+## References
 
 Core Tools\
 1. **MEME Suite**\
@@ -570,30 +572,28 @@ McKinney, W. (2010). *Data Structures for Statistical Computing in Python*. Proc
     Harris, C.R., Millman, K.J., van der Walt, S.J., et al. (2020). *Array programming with NumPy*. Nature, 585, 357-362.\
     <https://doi.org/10.1038/s41586-020-2649-2>
 
-------------------------------------------------------------------------
+Bibliography\
 
-## Bibliography
+10.  **Axtell, M. J., & Meyers, B. C.** (2018). Revisiting Criteria for Plant MicroRNA Annotation in the Era of Big Data. *The Plant Cell*, 30(2), 272–284. <https://doi.org/10.1105/tpc.17.00851>
 
-1.  **Axtell, M. J., & Meyers, B. C.** (2018). Revisiting Criteria for Plant MicroRNA Annotation in the Era of Big Data. *The Plant Cell*, 30(2), 272–284. <https://doi.org/10.1105/tpc.17.00851>
+11.  **Avraham A. Levy, & Moshe Feldman**. (2022). Evolution and origin of bread wheat. *The Plant Cell*, 34, 2549–2567. <https://doi.org/10.1093/plcell/koac130>
 
-2.  **Avraham A. Levy, & Moshe Feldman**. (2022). Evolution and origin of bread wheat. *The Plant Cell*, 34, 2549–2567. <https://doi.org/10.1093/plcell/koac130>
+12.  **Bulyk, M. L.** (2003). Computational prediction of transcription-factor binding site locations. *Genome Biology*, 5(1), 201. <https://doi.org/10.1186/gb-2003-5-1-201>
 
-3.  **Bulyk, M. L.** (2003). Computational prediction of transcription-factor binding site locations. *Genome Biology*, 5(1), 201. <https://doi.org/10.1186/gb-2003-5-1-201>
+13.  **Chen, Z.-Y., Guo, X.-J., Chen, Z.-X., Chen, W.-Y., & Wang, J.-R.** (2017). Identification and positional distribution analysis of transcription factor binding sites for genes from the wheat fl-cDNA sequences. *Bioscience Biotechnology and Biochemistry*, 81(6), 1125–1135. <https://doi.org/10.1080/09168451.2017.1295803>
 
-4.  **Chen, Z.-Y., Guo, X.-J., Chen, Z.-X., Chen, W.-Y., & Wang, J.-R.** (2017). Identification and positional distribution analysis of transcription factor binding sites for genes from the wheat fl-cDNA sequences. *Bioscience Biotechnology and Biochemistry*, 81(6), 1125–1135. <https://doi.org/10.1080/09168451.2017.1295803>
+14.  **Cheng, H., Liu, J., Wen, J., Nie, X., et al.** (2019). Frequent intra- and inter-species introgression shapes the landscape of genetic variation in bread wheat. *BMC Genomics*. <https://doi.org/10.1186/s13059-019-1744-x>
 
-5.  **Cheng, H., Liu, J., Wen, J., Nie, X., et al.** (2019). Frequent intra- and inter-species introgression shapes the landscape of genetic variation in bread wheat. *BMC Genomics*. <https://doi.org/10.1186/s13059-019-1744-x>
+15.  **Christmas, M. J., Hare, E. C., Capellini, T. L., et al.** (2023). Evolutionary constraint and innovation across hundreds of placental mammals. *Science*, 380, eabn3943. <https://doi.org/10.1126/science.abn3943>
 
-6.  **Christmas, M. J., Hare, E. C., Capellini, T. L., et al.** (2023). Evolutionary constraint and innovation across hundreds of placental mammals. *Science*, 380, eabn3943. <https://doi.org/10.1126/science.abn3943>
+16.  **Evans, C. E. B., Ramesh Arunkumar, & Philippa Borrill.** (2022). Transcription factor retention through multiple polyploidization steps in wheat. *G3 Genes\|Genomes\|Genetics*, 12(8). <https://doi.org/10.1093/g3journal/jkac147>
 
-7.  **Evans, C. E. B., Ramesh Arunkumar, & Philippa Borrill.** (2022). Transcription factor retention through multiple polyploidization steps in wheat. *G3 Genes\|Genomes\|Genetics*, 12(8). <https://doi.org/10.1093/g3journal/jkac147>
+17.  **Guo, A.-Y., Chen, X., Gao, G., Zhang, H., Zhu, Q.-H., Liu, X.-C., Zhong, Y.-F., Gu, X., He, K., & Luo, J.** (2007). PlantTFDB: a comprehensive plant transcription factor database. *Nucleic Acids Research*, 36(Database), D966–D969. <https://doi.org/10.1093/nar/gkm841>
 
-8.  **Guo, A.-Y., Chen, X., Gao, G., Zhang, H., Zhu, Q.-H., Liu, X.-C., Zhong, Y.-F., Gu, X., He, K., & Luo, J.** (2007). PlantTFDB: a comprehensive plant transcription factor database. *Nucleic Acids Research*, 36(Database), D966–D969. <https://doi.org/10.1093/nar/gkm841>
+18.  **Gupta, S., & Shankar, R.** (2024). Comprehensive analysis of computational approaches in plant transcription factors binding regions discovery. *Heliyon*, 10(20), e39140. <https://doi.org/10.1016/j.heliyon.2024.e39140>
 
-9.  **Gupta, S., & Shankar, R.** (2024). Comprehensive analysis of computational approaches in plant transcription factors binding regions discovery. *Heliyon*, 10(20), e39140. <https://doi.org/10.1016/j.heliyon.2024.e39140>
+19. **Thakur, V., Wanchana, S., Xu, M., Bruskiewich, R., Quick, W. P., Mosig, A., & Zhu, X.-G.** (2011). Characterization of statistical features for plant microRNA prediction. *BMC Genomics*, 12(1). <https://doi.org/10.1186/1471-2164-12-108>
 
-10. **Thakur, V., Wanchana, S., Xu, M., Bruskiewich, R., Quick, W. P., Mosig, A., & Zhu, X.-G.** (2011). Characterization of statistical features for plant microRNA prediction. *BMC Genomics*, 12(1). <https://doi.org/10.1186/1471-2164-12-108>
-
-11. **Zoonomia Consortium.** (2020). A comparative genomics multitool for scientific discovery and conservation. *Nature*, 587, 240–245. <https://doi.org/10.1038/s41586-020-2876-6>
+20. **Zoonomia Consortium.** (2020). A comparative genomics multitool for scientific discovery and conservation. *Nature*, 587, 240–245. <https://doi.org/10.1038/s41586-020-2876-6>
 
 ------------------------------------------------------------------------
