@@ -33,11 +33,11 @@ This is an exploratory project encouraging **independent hypothesis formulation*
 
 ## Table of Contents
 
--   [Description](##description)
--   [Repository Structure](##repository-structure)
--   [Results](##results)
--   [Running the Analysis](##running-the-analysis)
--   [Bibliography](##Bibliography)
+-   [Description](#description)
+-   [Repository Structure](#repository-structure)
+-   [Results](#results)
+-   [Running the Analysis](#running-the-analysis)
+-   [Bibliography](#bibliography)
 
 ## Description
 
@@ -63,7 +63,7 @@ This project includes two complementary analyses:
 **Output table:** `results/merged_bindata.100000.tsv`
 
 | Column | Description |
-|----|----|
+|------------------------------------|------------------------------------|
 | `chr`, `start`, `end` | 100kb genomic window coordinates |
 | `totalBases` | Positions with any phyloP score |
 | `conservedBases` | Bases in conserved segments (from q \< 0.05 + score \> 2.5) |
@@ -88,7 +88,7 @@ Some constrained windows lack annotated genes (№47, `gene = NA`), indicating p
 ##### Plot Interpretation
 
 | Plot | Description | Key Observations |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | `-log10(q-value)` | Statistical significance of deviation from model prediction (dashed line = q-value threshold 0.05) | Most constrained genes (q-value \< 0.05) are located on chromosomes Chr1A–4A. Other significant windows (ID 47) may represent conserved non-coding regions. |
 | `medianConsScore` | Robust median of phyloP values per 100kb window (measures typical conservation level) | Constraint is distributed in wide blocks. High phyloP score ≠ always low q-value. Top 10 constrained windows per chromosome are labeled. |
 
@@ -227,7 +227,7 @@ gff_chrom   gff_start   gff_end feature_type    gff_attributes
 ###### Example Options:
 
 | Argument | Type | Default | Description |
-|----|----|----|----|
+|------------------|------------------|------------------|------------------|
 | `input_file` | str | — | Path to input TSV/CSV file **without a header** |
 | `-o`, `--output_dir` | str | `phyloP_plots` | Directory for saving output plots |
 | `--chunk_size` | int | `200000` | Number of lines to read per chunk |
@@ -249,7 +249,7 @@ This tool is useful for:
 -   Highlighting overlapping genomic features
 -   Producing phyloP profiles ![img](images/phyloP_chunk_8.png)
 
-#### C3/C4 Root-to-Tip Analysis
+#### C3/C4 Root-to-Tip Analysis {#c3c4-root-to-tip-analysis}
 
 ##### 1. Prepare per-gene alignments
 
@@ -280,7 +280,7 @@ Applies FDR correction to identify significantly shifted genes
 -   `genes_C4.txt`: genes evolving faster in C4 lineages\
 -   `root_to_tip_C3vsC4.csv`: full table with RTT values, p-values, q-values
 
-#### miRNA Target Analysis Pipeline
+#### miRNA Target Analysis Pipeline {#mirna-target-analysis-pipeline}
 
 This pipeline identifies and analyzes miRNA targets in conserved genomic regions of *Triticum aestivum* (bread wheat), with functional annotation via GO term analysis.
 
