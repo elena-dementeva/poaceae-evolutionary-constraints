@@ -46,12 +46,12 @@ check_cmd() {
 
 MAX_THREADS=$(sysctl -n hw.ncpu)
 
-# Расчет свободной памяти (в GB) для macOS
+# memory check for macOS
 FREE_MEM_GB=$(vm_stat | awk '/Pages free/ {free=$3; gsub(/\./, "", free)} /Pages speculative/ {spec=$3; gsub(/\./, "", spec)} END {total=(free + spec) * 4096 / 1024 / 1024 / 1024; printf "%.0f", total}')
 
-SAFE_THREADS=$((FREE_MEM_GB / 2))  # 2GB на поток
+SAFE_THREADS=$((FREE_MEM_GB / 2))
 THREADS=$(( SAFE_THREADS < MAX_THREADS ? SAFE_THREADS : MAX_THREADS-1 ))
-THREADS=$(( THREADS < 1 ? 1 : THREADS ))  # Минимум 1 поток
+THREADS=$(( THREADS < 1 ? 1 : THREADS ))
 
 echo "Using $THREADS threads (available: $MAX_THREADS cores, $FREE_MEM_GB GB free RAM)"
 

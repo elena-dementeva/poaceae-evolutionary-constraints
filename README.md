@@ -34,11 +34,11 @@ This is an exploratory project encouraging **independent hypothesis formulation*
 
 ## Table of Contents
 
-- [Description](##description)
-- [Repository Structure](##repository-structure)
-- [Results](##results)
-- [Running the Analysis](##running-the-analysis)
-- [Bibliography](##Bibliography)
+- [Description](#description)
+- [Repository Structure](#repository-structure)
+- [Results](#results)
+- [Running the Analysis](#running-the-analysis)
+- [Bibliography](#bibliography)
 
 
 ## Description
@@ -302,6 +302,17 @@ This pipeline identifies and analyzes miRNA targets in conserved genomic regions
 
 ##### Installation  
 
+Make sure that the following scripts and data files are placed in the same directory:
+
+```hairpin.fa```
+```mature.fa```
+```env.yaml```
+```100_identity_filtrator.py```
+```mirna_filtrator.py```
+```mirna_search_script.sh```
+```pstargetfinder_filtrator.py```
+```reference_genome.fa```  
+
 ```bash
 conda env create -f env.yaml
 conda activate mirna_analysis
@@ -411,7 +422,7 @@ This extension identifies transcription factor binding sites (TFBS) in conserved
 - bedtools (v2.31.1)
 - Internet access for MEME Suite web tools
 
-##### Usage
+##### Usage  
 
 1. Identify Transcription Factor Binding Sites Search Regions
 
@@ -506,6 +517,12 @@ awk '$13 != -1 && $13 <= 10000 {print $10}' nearest_genes.bed | sort -u > tf_tar
 - FIMO p-value threshold (`--thresh`)
 - Maximum distance to consider gene association (10kb in example)
 
+##### Troubleshooting  
+
+Make sure the annotation file is in ```gff3``` format and is in the directory where the analysis is run.
+
+Verify internet connection for web tools
+
 ##### Integration Notes
 
 - Both pipelines share the initial conserved region identification
@@ -515,7 +532,7 @@ awk '$13 != -1 && $13 <= 10000 {print $10}' nearest_genes.bed | sort -u > tf_tar
 ##### Limitations
 
 The above instructions analyze one chromosomal sequence per run. For multiple sequences, consider using GNU Parallel or similar tools to automate the process. 
-miRNA predictions are based on miRBase database completeness and is subject to change. The pipeline is designed for *Triticum aestivum* and may require adjustments for other species.
+miRNA predictions are based on miRBase database completeness and are subject to change. The pipeline is designed for *Triticum aestivum* and may require adjustments for other species.
 
 ##### References  
 
