@@ -189,7 +189,7 @@ Phosphate metabolism is a vital process for wheat growth and reproduction under 
 
 ![img](images/TFBS_motifs.png)  
 *Figure above shows the results of motif search in conserved regions including names, p-values, locations and consensuses*  
-![img](images/TFBS_GO.png)   
+!![img](images/TFBS_GO.png)   
 *Figure above shows the results of GO enrichment analysis for discovered motifs, their respective sequences and GO predictions.*
 
 ##### Biological Interpretation  
