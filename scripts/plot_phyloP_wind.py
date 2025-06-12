@@ -2,20 +2,18 @@ import argparse
 import os
 
 import matplotlib.pyplot as plt
-from matplotlib import colormaps
 import numpy as np
 import pandas as pd
+from matplotlib import colormaps
 
-
-parser = argparse.ArgumentParser(
-    description="Build phyloP plots by data chunks."
-)
+parser = argparse.ArgumentParser(description="Build phyloP plots by data chunks.")
 parser.add_argument(
     "input_file",
     help="Path to input CSV/TSV file without headers",
 )
 parser.add_argument(
-    "-o", "--output_dir",
+    "-o",
+    "--output_dir",
     default="phyloP_plots",
     help="Directory to save plots",
 )
@@ -107,12 +105,8 @@ for chunk_idx, chunk in enumerate(reader, start=1):
     max_pos = int(chunk["end"].max())
     print(f"[INFO] Position range: {min_pos} - {max_pos}")
 
-    highlight_types = list(
-        set(chunk["feature_type"]) & set(args.highlight)
-    )
-    background_types = list(
-        set(chunk["feature_type"]) & set(args.background)
-    )
+    highlight_types = list(set(chunk["feature_type"]) & set(args.highlight))
+    background_types = list(set(chunk["feature_type"]) & set(args.background))
 
     color_map = {
         ftype: CMAP_POINTS(i / len(highlight_types))
@@ -123,15 +117,9 @@ for chunk_idx, chunk in enumerate(reader, start=1):
         for i, ftype in enumerate(background_types)
     }
 
-    types_per_pos = (
-        chunk.groupby("end")["feature_type"]
-        .apply(set)
-        .to_dict()
-    )
+    types_per_pos = chunk.groupby("end")["feature_type"].apply(set).to_dict()
     highlight_positions = {
-        pos
-        for pos, types in types_per_pos.items()
-        if types & set(args.highlight)
+        pos for pos, types in types_per_pos.items() if types & set(args.highlight)
     }
 
     print("[INFO] Building plot for chunk")
@@ -145,9 +133,11 @@ for chunk_idx, chunk in enumerate(reader, start=1):
     phyloP_array = unique_df["phyloP"].values
 
     colors = [
-        color_map[
-            sorted(types_per_pos[pos] & set(args.highlight))[0]
-        ] if pos in highlight_positions else DEFAULT_COLOR
+        (
+            color_map[sorted(types_per_pos[pos] & set(args.highlight))[0]]
+            if pos in highlight_positions
+            else DEFAULT_COLOR
+        )
         for pos in pos_array
     ]
 
@@ -161,9 +151,9 @@ for chunk_idx, chunk in enumerate(reader, start=1):
             alpha=args.alpha,
         )
 
-    background_df = chunk[
-        chunk["feature_type"].isin(args.background)
-    ].drop_duplicates(subset=["gff_start", "gff_end", "feature_type"])
+    background_df = chunk[chunk["feature_type"].isin(args.background)].drop_duplicates(
+        subset=["gff_start", "gff_end", "feature_type"]
+    )
     for _, row in background_df.iterrows():
         ftype = row["feature_type"]
         b_color = background_color_map.get(ftype, "orange")
@@ -181,24 +171,28 @@ for chunk_idx, chunk in enumerate(reader, start=1):
     )
     ax.set_xlabel("Genomic position")
     ax.set_ylabel("phyloP -log10(p-value)")
-    ax.set_title(
-        f"PhyloP: positions {min_pos}-{max_pos}"
-    )
+    ax.set_title(f"PhyloP: positions {min_pos}-{max_pos}")
     ax.grid(True, linestyle="--", alpha=0.3)
 
     legend_elements = []
     for ftype in highlight_types:
         legend_elements.append(
             plt.Line2D(
-                [0], [0], color=color_map[ftype], lw=4,
+                [0],
+                [0],
+                color=color_map[ftype],
+                lw=4,
                 label=f"{ftype} (point)",
             )
         )
     for ftype in background_types:
         legend_elements.append(
             plt.Line2D(
-                [0], [0], color=background_color_map[ftype],
-                lw=10, alpha=args.background_alpha,
+                [0],
+                [0],
+                color=background_color_map[ftype],
+                lw=10,
+                alpha=args.background_alpha,
                 label=f"{ftype} (bg)",
             )
         )
@@ -211,9 +205,7 @@ for chunk_idx, chunk in enumerate(reader, start=1):
         )
 
     plt.tight_layout()
-    plot_path = os.path.join(
-        args.output_dir, f"phyloP_chunk_{chunk_idx}.png"
-    )
+    plot_path = os.path.join(args.output_dir, f"phyloP_chunk_{chunk_idx}.png")
     plt.savefig(plot_path, dpi=300)
     plt.close()
     print(f"Saved plot: {plot_path}")

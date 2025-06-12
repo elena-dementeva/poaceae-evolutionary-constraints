@@ -7,7 +7,7 @@ from multiprocessing import Pool, cpu_count
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from intervaltree import IntervalTree, Interval
+from intervaltree import Interval, IntervalTree
 
 
 def parse_args():
@@ -169,9 +169,7 @@ def find_continuous_segments(df_chunk, threshold, min_q, max_gap, max_bad):
         else:
             idx += 1
     print(f"   chunk: found {len(segments)} segments")
-    return pd.DataFrame(
-        segments, columns=["chrom", "start", "end", "mean_score"]
-    )
+    return pd.DataFrame(segments, columns=["chrom", "start", "end", "mean_score"])
 
 
 def load_and_sort_beds(gff_file, prefix, chromosome):
@@ -200,8 +198,12 @@ def summarize_feature(feature, segs_df, feats_df, prefix, no_plots):
     print("Summary:")
     print(f"   All segments: {len(segs_df)}")
     if feature != "noncoding":
-        tree = IntervalTree(Interval(r.start, r.end + 1) for _, r in feats_df.iterrows())
-        hits = sum(bool(tree.overlap(r.start, r.end + 1)) for _, r in segs_df.iterrows())
+        tree = IntervalTree(
+            Interval(r.start, r.end + 1) for _, r in feats_df.iterrows()
+        )
+        hits = sum(
+            bool(tree.overlap(r.start, r.end + 1)) for _, r in segs_df.iterrows()
+        )
         pct = hits / len(segs_df) * 100 if len(segs_df) else 0
         print(f"   Intersected with {feature}: {hits} ({pct:.1f}%)")
     lengths = segs_df.end - segs_df.start + 1
@@ -213,8 +215,14 @@ def summarize_feature(feature, segs_df, feats_df, prefix, no_plots):
     if not no_plots:
         mids = ((segs_df.start + segs_df.end) // 2) / 1_000_000
         plt.figure(figsize=(10, 4))
-        plt.scatter(mids, segs_df.mean_score,
-                    s=12, alpha=0.6, edgecolor="none", color="steelblue")
+        plt.scatter(
+            mids,
+            segs_df.mean_score,
+            s=12,
+            alpha=0.6,
+            edgecolor="none",
+            color="steelblue",
+        )
         plt.title(f"{feature} Manhattan – {segs_df.iloc[0]['chrom']}")
         plt.xlabel("Genomic position (Mb)")
         plt.ylabel("Mean phyloP")
@@ -252,9 +260,8 @@ def main():
         )
 
     print("Segments processed in parallel")
-    segs_df = (
-        pd.concat(dfs, ignore_index=True)
-        .drop_duplicates(["chrom", "start", "end"])
+    segs_df = pd.concat(dfs, ignore_index=True).drop_duplicates(
+        ["chrom", "start", "end"]
     )
     print(f"Unique segments: {len(segs_df)}")
 
@@ -272,11 +279,11 @@ def main():
     print("Calculating noncoding regions and exporting TSV")
     non_bed = f"{prefix}_noncoding.bed"
     beds = " ".join(f"-b {prefix}_{feat}.bed" for feat in feats)
-    subprocess.run(
-        f"bedtools subtract -A -a {seg_bed} {beds} > {non_bed}", shell=True
-    )
+    subprocess.run(f"bedtools subtract -A -a {seg_bed} {beds} > {non_bed}", shell=True)
 
-    non_df = pd.read_csv(non_bed, sep="\t", header=None, names=["chrom", "start", "end"])
+    non_df = pd.read_csv(
+        non_bed, sep="\t", header=None, names=["chrom", "start", "end"]
+    )
     noncoding_df = pd.merge(non_df, segs_df, on=["chrom", "start", "end"])
     non_tsv = f"{prefix}_noncoding_segments.tsv"
     noncoding_df.to_csv(non_tsv, sep="\t", index=False)
