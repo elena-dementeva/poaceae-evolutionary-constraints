@@ -213,21 +213,21 @@ R packages
 ##### 1. Process phyloP data
 
 ```bash
-python scripts/process_phyloP_paral.py data/roast.maf
+python scripts/process_phylop_parallel.py data/roast.maf
 ```
 This script processes phyloP scores from a MAF file and applies FDR correction to identify significantly conserved positions (q < 0.05)
 
 ##### 2. Define conserved regions
 
 ```bash
-python scripts/find_conserved_multi.py
+python scripts/find_conserved_regions.py
 ```
 Merges adjacent significant positions into conserved segments. Output: {CHR}_conserved_segments.bed.
 
 ##### 3. Generate 100kb bins with annotations
 
 ```bash
-bash scripts/generate_bindata.sh
+bash scripts/generate_bin_data.sh
 ```
 This script:
 
@@ -249,9 +249,51 @@ This script:
 ##### 4. Identify constrained windows
 
 ```bash
-Rscript scripts/100kb_bin_constraint.R
+Rscript scripts/constraint_100kb_bin.R
 ```
 Fits a linear regression model to predict the expected number of conserved bases in each window, then computes standardized residuals, p-values, and q-values. Windows with q < 0.05 are considered significantly constrained. A Manhattan plot is generated to visualize results.
+
+##### 5. Visualize PhyloP Scores in Genomic Windows
+
+To visualize conservation patterns at high resolution, use the script:
+
+``` bash
+python scripts/plot_phylop_window.py input.tsv --highlight gene --background CDS
+```
+
+This script generates window-wise phyloP plots from a TSV file without headers. Each chunk of the data is processed separately to manage memory, and output figures are saved as PNG files.
+
+###### Expected Input Format (no header):
+
+```         
+chrom   start   end position    phyloP  p_value q_value significant constraint_type
+gff_chrom   gff_start   gff_end feature_type    gff_attributes
+```
+
+###### Example Options:
+
+| Argument | Type | Default | Description |
+|----|----|----|----|
+| `input_file` | str | тАФ | Path to input TSV/CSV file **without a header** |
+| `-o`, `--output_dir` | str | `phyloP_plots` | Directory for saving output plots |
+| `--chunk_size` | int | `200000` | Number of lines to read per chunk |
+| `--highlight` | list | `["gene"]` | Feature types to be highlighted as colored points |
+| `--background` | list | `["CDS"]` | Feature types to be shown as background regions |
+| `--point_size` | int | `10` | Size of points (affects line width) |
+| `--alpha` | float | `0.6` | Opacity of highlight points |
+| `--background_alpha` | float | `0.4` | Opacity of background shading |
+| `--delimiter` | str | `"\t"` | Delimiter for input file |
+| `--columns` | list | see below | Column names for input file (used if no header is present) |
+
+###### Output:
+
+Each chunk produces a separate plot (e.g., `phyloP_chunk_1.png`) saved in the `phyloP_plots/` directory.
+
+This tool is useful for:
+
+-   Visualizing conserved vs. unconserved regions along chromosomes
+-   Highlighting overlapping genomic features
+-   Producing phyloP profiles ![img](images/phyloP_chunk_8.png)
 
 #### C3/C4 Root-to-Tip Analysis
 
@@ -267,7 +309,7 @@ Ensure that species identifiers match between alignment files and the tree.
 ##### 2. Run evolutionary rate comparison
 
 ```bash
-Rscript scripts/run_C3_C4.R | tee run_C3_C4.log
+Rscript scripts/run_c3_c4.R | tee run_C3_C4.log
 ```
 This script:
 
@@ -307,10 +349,10 @@ Make sure that the following scripts and data files are placed in the same direc
 ```hairpin.fa```
 ```mature.fa```
 ```env.yaml```
-```100_identity_filtrator.py```
+```identity_filtrator.py```
 ```mirna_filtrator.py```
-```mirna_search_script.sh```
-```pstargetfinder_filtrator.py```
+```search_mirna.sh```
+```ps_target_finder_filtrator.py```
 ```reference_genome.fa```  
 
 ```bash
