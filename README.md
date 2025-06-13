@@ -34,10 +34,20 @@ This is an exploratory project encouraging **independent hypothesis formulation*
 
 ## Table of Contents
 
+- [Background](#background)
+- [Purpose](#purpose)
 - [Description](#description)
 - [Repository Structure](#repository-structure)
-- [Results](#results)
+  - [Results](#results)
+    - [Constraint Analysis](#constraint-analysis)
+    - [Evolutionary Analysis of Genes Associated with C₃/C₄ Photosynthesis](#evolutionary-analysis-of-genes-associated-with-c₃c₄-photosynthesis)
+    - [Analysis of CNEs](#analysis-of-cnes-mirna-target-search-and-go-enrichnent-tfbs-and-neighbouring-genes-search-and-go-encrichment)
 - [Running the Analysis](#running-the-analysis)
+  - [Environment Setup](#environment-setup)
+  - [Constraint Analysis Run](#constraint-analysis-run)
+  - [C3/C4 Root-to-Tip Analysis](#c3c4-root-to-tip-analysis)
+  - [miRNA Target Analysis Pipeline](#mirna-target-analysis-pipeline)
+  - [Transcription Factor Binding Sites Search](#transcription-factor-binding-sites-search-and-identification-of-neighbouring-genes)
 - [Bibliography](#bibliography)
 
 
@@ -56,8 +66,6 @@ This project includes two complementary analyses:
    - Applies FDR correction to identify genes with significantly different rates.
 
 ---
-
-## Repository Structure
 
 ### Results
 
@@ -198,34 +206,23 @@ The presence of conserved TFBS suggests they play a crucial role in regulating g
 
 ---
 
-
-
-### Running the Analysis
-
-#### Environment Setup
-
-Python
-
-R packages
+### Running the Analysis  
 
 #### Constraint Analysis Run
 
-##### 1. Process phyloP data
-
+1. **Process phyloP data**  
 ```bash
 python scripts/process_phylop_parallel.py data/roast.maf
 ```
 This script processes phyloP scores from a MAF file and applies FDR correction to identify significantly conserved positions (q < 0.05)
 
-##### 2. Define conserved regions
-
+2. **Define conserved regions**  
 ```bash
 python scripts/find_conserved_regions.py
 ```
 Merges adjacent significant positions into conserved segments. Output: {CHR}_conserved_segments.bed.
 
-##### 3. Generate 100kb bins with annotations
-
+3. **Generate 100kb bins with annotations**  
 ```bash
 bash scripts/generate_bin_data.sh
 ```
@@ -246,18 +243,14 @@ This script:
 **Output:** `merged_bindata.100000.tsv`
 
 
-##### 4. Identify constrained windows
-
+4. **Identify constrained windows**  
 ```bash
 Rscript scripts/constraint_100kb_bin.R
 ```
 Fits a linear regression model to predict the expected number of conserved bases in each window, then computes standardized residuals, p-values, and q-values. Windows with q < 0.05 are considered significantly constrained. A Manhattan plot is generated to visualize results.
 
-##### 5. Visualize PhyloP Scores in Genomic Windows
-
-To visualize conservation patterns at high resolution, use the script:
-
-``` bash
+5. **Visualize PhyloP Scores in Genomic Windows**
+```bash
 python scripts/plot_phylop_window.py input.tsv --highlight gene --background CDS
 ```
 
@@ -297,7 +290,7 @@ This tool is useful for:
 
 #### C3/C4 Root-to-Tip Analysis
 
-##### 1. Prepare per-gene alignments
+1. **Prepare per-gene alignments**  
 
 Use gene coordinates and the MAF file to extract one alignment per gene. Convert each MAF block into FASTA format using
 
@@ -306,8 +299,7 @@ mafToFastaStitcher input.gene.maf > gene.fasta
 ```
 Ensure that species identifiers match between alignment files and the tree.
 
-##### 2. Run evolutionary rate comparison
-
+2. **Run evolutionary rate comparison**  
 ```bash
 Rscript scripts/run_c3_c4.R | tee run_C3_C4.log
 ```
@@ -324,11 +316,11 @@ Applies FDR correction to identify significantly shifted genes
 - `genes_C4.txt`: genes evolving faster in C4 lineages  
 - `root_to_tip_C3vsC4.csv`: full table with RTT values, p-values, q-values 
 
-#### miRNA Target Analysis Pipeline  
+#### miRNA Target Analysis Pipeline
 
-This pipeline identifies and analyzes miRNA targets in conserved genomic regions of *Triticum aestivum* (bread wheat), with functional annotation via GO term analysis.  
+This pipeline identifies and analyzes miRNA targets in conserved genomic regions of *Triticum aestivum* (bread wheat), with functional annotation via GO term analysis.
 
-##### Pipeline Overview  
+#### Pipeline Overview
 
 1. Convert conserved regions (TSV) to BED format with 500bp flanking regions
 2. Extract genomic sequences in FASTA format
@@ -336,120 +328,89 @@ This pipeline identifies and analyzes miRNA targets in conserved genomic regions
 4. Filter miRNA-target pairs by binding strength
 5. Perform GO term enrichment analysis
 
-##### Requirements  
+#### Requirements
 
 - Conda (Miniconda or Anaconda)
 - Unix-like environment (Linux/macOS)
 - Web browser for online tools
 
-##### Installation  
+#### Installation
 
 Make sure that the following scripts and data files are placed in the same directory:
 
-```hairpin.fa```
-```mature.fa```
-```env.yaml```
-```identity_filtrator.py```
-```mirna_filtrator.py```
-```search_mirna.sh```
-```ps_target_finder_filtrator.py```
-```reference_genome.fa```  
+```
+hairpin.fa
+mature.fa
+env.yaml
+identity_filtrator.py
+mirna_filtrator.py
+search_mirna.sh
+ps_target_finder_filtrator.py
+reference_genome.fa
+```
 
 ```bash
 conda env create -f env.yaml
 conda activate mirna_analysis
 ```
 
-##### Usage  
+#### Usage
 
-1. Prepare Genomic Regions  
-Convert TSV to BED format with 500bp flanking regions:  
+1. **Prepare Genomic Regions**
+   Convert TSV to BED format with 500bp flanking regions:
+   ```bash
+   awk -v OFS='\t' 'NR > 1 {start = ($2 - 500 < 0) ? 0 : $2 - 500; print $1, start, $3 + 500, $4, $5}' input.tsv > regions_with_window.bed
+   ```
 
-```bash
-awk -v OFS='\t' 'NR > 1 {start = ($2 - 500 < 0) ? 0 : $2 - 500; print $1, start, $3 + 500, $4, $5}' input.tsv > regions_with_window.bed
-```
+2. **Extract Sequences**
+   Extract FASTA sequences using bedtools:
+   ```bash
+   bedtools getfasta -fi reference_genome.fa -bed regions_with_window.bed -fo extracted_regions.fa
+   ```
 
-2. Extract Sequences  
-Extract FASTA sequences using your preferred tool (e.g., bedtools):  
+3. **Identify miRNA Targets**
+   Run the miRNA search script:
+   ```bash
+   ./miRNA_search_script.sh -i extracted_regions.fa
+   ```
 
-```bash
-bedtools getfasta -fi reference_genome.fa -bed regions_with_window.bed -fo extracted_regions.fa
-```
+   Then:
+   - Visit [psRNATarget](https://www.zhaolab.org/psRNATarget/)
+   - Paste sequences from `extracted_regions.fa`
+   - Submit job and download results (`psRNATargetJob-*.txt`)
 
-3. Identify miRNA Targets  
-Run the miRNA search script:  
+4. **Filter miRNA Targets**
+   Filter by binding strength (lower expectation = stronger binding):
+   ```bash
+   python ps_target_finder_filtrator.py -i psRNATargetJob.txt -o psRNATarget_filtered_2_5.txt --max_expectation 2.5
+   ```
 
-```bash
-./miRNA_search_script.sh -i extracted_regions.fa
-```
+5. **GO Term Analysis**
+   - Copy the target sequences (column 2) from filtered results
+   - Visit [g:Profiler](https://biit.cs.ut.ee/gprofiler/gost)
+   - Paste the sequences and run analysis
 
-Then:  
+#### Output Files
 
-Visit [psRNATarget](https://www.zhaolab.org/psRNATarget/)  
+- `regions_with_window.bed`: Genomic regions with flanking sequences
+- `extracted_regions.fa`: FASTA sequences of target regions
+- `psRNATargetJob-*.txt`: Raw miRNA target predictions
+- `psRNATarget_filtered_*.txt`: Filtered miRNA targets
 
-Paste sequences from ```extracted_regions.fa```  
+#### Dependencies
+All dependencies are listed in `env.yaml`.
 
-Submit job and download results (```psRNATargetJob-*.txt```)  
+#### Troubleshooting
 
+- Ensure the reference genome is in the same directory for sequence extraction
+- Check file permissions for scripts (`chmod +x miRNA_search_script.sh`)
+- Verify internet connection for web tools
 
-4. Filter miRNA Targets   
-Filter by binding strength (lower expectation = stronger binding):  
-
-```bash
-python psTargetFinder_filtrator.py -i psRNATargetJob.txt -o psRNATarget_filtered_2_5.txt --max_expectation 2.5
-```
-5. GO Term Analysis  
-Copy the target sequences (column 2) from filtered results  
-
-Visit [g:Profiler](https://biit.cs.ut.ee/gprofiler/gost)  
-
-Paste the sequences and run analysis  
-
-
-##### Output Files  
-
-```regions_with_window.bed```: Genomic regions with flanking sequences
-
-```extracted_regions.fa```: FASTA sequences of target regions
-
-```psRNATargetJob-*.txt```: Raw miRNA target predictions
-
-```psRNATarget_filtered_*.txt```: Filtered miRNA targets
-
-
-##### Parameters  
-Key adjustable parameters:  
-
-- Flanking region size (change the 500 value in ```awk``` command)
-
-- miRNA-target binding threshold (```--max_expectation``` in ```filtrator.py```)
-
-- Organism selection in g:Profiler (*Triticum aestivum*)
-
-##### Dependencies
-All dependencies are listed in (```env.yaml```), including:
-
-  - python=3.12.2
-  - viennarna=2.7.0
-  - blast=2.16.0
-  - parallel=20250322
-  - bedtools=2.31.1
-  - pandas=2.2.3
-  - numpy=2.2.5
-
-##### Troubleshooting  
-
-Ensure the reference genome is in the same directory for sequence extraction
-
-Check file permissions for scripts (```chmod +x miRNA_search_script.sh```)
-
-Verify internet connection for web tools
-
-#### Transcription Factor Binding Sites Search and Identification of Neighbouring Genes  
+### Transcription Factor Binding Sites Search and Identification of Neighbouring Genes
 
 This extension identifies transcription factor binding sites (TFBS) in conserved genomic regions and analyzes their nearest genes with functional annotation via GO term analysis.
 
-##### Pipeline Overview
+#### Pipeline Overview
 
 1. Convert conserved regions (TSV) to BED format with 500bp flanking regions to capture potential TFBSs
 2. Extract genomic sequences in FASTA format
@@ -458,123 +419,117 @@ This extension identifies transcription factor binding sites (TFBS) in conserved
 5. Find nearest genes to TFBS
 6. Perform GO term enrichment analysis with g:Profiler
 
-##### Requirements
+#### Requirements
 
 - MEME Suite (v5.5.7)
 - bedtools (v2.31.1)
 - Internet access for MEME Suite web tools
 
-##### Usage  
+#### Usage
 
-1. Identify Transcription Factor Binding Sites Search Regions
+1. **Identify Transcription Factor Binding Sites Search Regions**
+   ```bash
+   # Convert conserved regions to BED with flanks
+   awk 'NR>1 {
+       start = $3 - 500;
+       end = $4 + 500;
+       if (start < 0) start = 0;
+       print $1 "\t" start "\t" end "\t" "constrained_region_"NR-1 "\t" $6 "\t" "."
+   }' input.tsv > conserved_regions.bed
 
-```bash
-# Convert conserved regions to BED with flanks
-awk 'NR>1 {
-    start = $3 - 500;
-    end = $4 + 500;
-    if (start < 0) start = 0;
-    print $1 "\t" start "\t" end "\t" "constrained_region_"NR-1 "\t" $6 "\t" "."
-}' input.tsv > conserved_regions.bed
+   # Extract sequences
+   bedtools getfasta -fi reference_genome.fa -bed conserved_regions.bed -fo tf_search_regions.fa
+   ```
 
-# Extract sequences
-bedtools getfasta -fi reference_genome.fa -bed conserved_regions.bed -fo tf_search_regions.fa
-```
+2. **Run MEME Motif Discovery**
+   - Visit [MEME Suite](https://meme-suite.org/meme/tools/meme)
+   - Upload `tf_search_regions.fa`
+   - Recommended parameters (adjustable):
+     - Classic motif discovery mode
+     - DNA, RNA or protein sequence alphabet
+     - Any distribution
+     - Number of motifs: 3
+     - Minimum width: 6bp
+     - Maximum width: 50bp
+     - Both strand search
+   - Download results (`meme.txt`)
 
-2. Run MEME Motif Discovery
+3. **Scan for Motif Occurrences**
+   ```bash
+   fimo --oc fimo_results --thresh 1e-4 meme.txt tf_search_regions.fa
+   ```
 
-- 1. Visit [MEME Suite](https://meme-suite.org/meme/tools/meme)
-- 2. Upload `tf_search_regions.fa`
-- 3. Recommended parameters (adjustable):
-   - Classic motif discovery mode
-   - DNA, RNA or protein sequence alphabet
-   - Any distribution
-   - Number of motifs: 3
-   - Minimum width: 6bp
-   - Maximum width: 50bp
-   - Both strand search
-- 4. Download results (`meme.txt`)
+4. **Prepare Gene Annotation**
+   ```bash
+   # Convert GFF3 to BED format
+   awk '$3 == "gene" { 
+       split($9, attr, ";"); 
+       for (i in attr) { 
+           if (attr[i] ~ /^ID=/) { 
+               split(attr[i], id, "="); 
+               gene_id = id[2]; 
+           } 
+       } 
+       print $1 "\t" $4 "\t" $5 "\t" gene_id "\t" $6 "\t" $7 
+   }' annotation.gff3 > genes_annotation.bed
+   ```
 
-3. Scan for Motif Occurrences  
+5. **Find Nearest Genes**
+   ```bash
+   # Process FIMO results - convert TSV to BED
+   awk 'NR>1 {
+       start = $4 - 1;
+       end = $5;
+       if (start >= 0 && end >= 0) {
+           print $3 "\t" start "\t" end "\t" $2 "\t" $7 "\t" $6;
+       }
+   }' fimo_results/fimo.tsv > fimo_results/fimo_corrected.bed
 
-```bash
-fimo --oc fimo_results --thresh 1e-4 meme.txt tf_search_regions.fa
-```
+   # Sort and find nearest genes
+   bedtools sort -i fimo_results/fimo_corrected.bed > fimo_results/fimo_sorted.bed
+   bedtools closest -a fimo_results/fimo_sorted.bed -b genes_annotation.bed -D b > nearest_genes.bed
 
-4. Prepare Gene Annotation  
+   # Extract unique genes within 10kb (adjustable)
+   awk '$13 != -1 && $13 <= 10000 {print $10}' nearest_genes.bed | sort -u > tf_target_genes.txt
+   ```
 
-```bash
-# Convert GFF3 to BED format
-awk '$3 == "gene" { 
-    split($9, attr, ";"); 
-    for (i in attr) { 
-        if (attr[i] ~ /^ID=/) { 
-            split(attr[i], id, "="); 
-            gene_id = id[2]; 
-        } 
-    } 
-    print $1 "\t" $4 "\t" $5 "\t" gene_id "\t" $6 "\t" $7 
-}' annotation.gff3 > genes_annotation.bed
-```
+6. **GO Term Analysis**
+   - Visit [g:Profiler](https://biit.cs.ut.ee/gprofiler/gost)
+   - Upload `tf_target_genes.txt`
+   - Select *Triticum aestivum* as organism
+   - Run enrichment analysis
 
-5. Find Nearest Genes  
+#### Additional Output Files
 
-```bash
-# Process FIMO results - convert TSV to BED
-awk 'NR>1 {
-    start = $4 - 1;
-    end = $5;
-    if (start >= 0 && end >= 0) {
-        print $3 "\t" start "\t" end "\t" $2 "\t" $7 "\t" $6;
-    }
-}' fimo_results/fimo.tsv > fimo_results/fimo_corrected.bed
+- `conserved_regions.bed`: Flanked genomic regions for TFBS search
+- `tf_search_regions.fa`: Extracted sequences for motif discovery
+- `fimo_results/`: Directory containing TFBS predictions
+- `nearest_genes.bed`: All TFBS-gene associations
+- `tf_target_genes.txt`: Final target genes for enrichment
 
-# Sort and find nearest genes
-bedtools sort -i fimo_results/fimo_corrected.bed > fimo_results/fimo_sorted.bed
-bedtools closest -a fimo_results/fimo_sorted.bed -b genes_annotation.bed -D b > nearest_genes.bed
-
-# Extract unique genes within 10kb (adjustable)
-awk '$13 != -1 && $13 <= 10000 {print $10}' nearest_genes.bed | sort -u > tf_target_genes.txt
-```
-
-6. GO Term Analysis  
-
-1. Visit [g:Profiler](https://biit.cs.ut.ee/gprofiler/gost)
-2. Upload `tf_target_genes.txt`
-3. Select *Triticum aestivum* as organism
-4. Run enrichment analysis
-
-##### Additional Output Files
-
-`conserved_regions.bed`: Flanked genomic regions for TFBS search  
-`tf_search_regions.fa`: Extracted sequences for motif discovery  
-`fimo_results/`: Directory containing TFBS predictions  
-`nearest_genes.bed`: All TFBS-gene associations  
-`tf_target_genes.txt`: Final target genes for enrichment  
-
-##### Key Parameters
+#### Key Parameters
 
 - Flanking region size (adjust 500bp in awk command)
 - MEME motif discovery parameters (mode, distribution, number, width etc)
 - FIMO p-value threshold (`--thresh`)
 - Maximum distance to consider gene association (10kb in example)
 
-##### Troubleshooting  
+#### Troubleshooting
 
-Make sure the annotation file is in ```gff3``` format and is in the directory where the analysis is run.
+- Make sure the annotation file is in `gff3` format and is in the directory where the analysis is run
+- Verify internet connection for web tools
 
-Verify internet connection for web tools
-
-##### Integration Notes
+#### Integration Notes
 
 - Both pipelines share the initial conserved region identification
 - Results can be compared between miRNA targets and TF targets
 - Combined analysis possible by merging `target_genes.txt` and `tf_target_genes.txt` for GO analysis
 
-##### Limitations
+#### Limitations
 
-The above instructions analyze one chromosomal sequence per run. For multiple sequences, consider using GNU Parallel or similar tools to automate the process. 
-miRNA predictions are based on miRBase database completeness and are subject to change. The pipeline is designed for *Triticum aestivum* and may require adjustments for other species.
+- The above instructions analyze one chromosomal sequence per run. For multiple sequences, consider using GNU Parallel or similar tools to automate the process
+- miRNA predictions are based on miRBase database completeness and are subject to change
+- The pipeline is designed for *Triticum aestivum* and may require adjustments for other species
 
 ##### References  
 
